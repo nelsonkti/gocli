@@ -7,6 +7,7 @@ import (
 	"gocli/util/xprintf"
 	"os"
 	"strings"
+	"unicode"
 )
 
 const (
@@ -98,9 +99,29 @@ func stringToSplit(str string) []string {
 	return split
 }
 
-func getDirPath(dir string, path string) string {
+func getDirPath(dir string, types, path string) string {
 	if path == "" {
 		return dir
 	}
+	if !strings.Contains(path, UnderlineSymbol+types) {
+		return dir + SlashSymbol + path + UnderlineSymbol + types
+	}
 	return dir + SlashSymbol + path
+}
+
+// isStrEqual 判断两个字符串是否相等
+func isStrEqual(oldStr, str string) bool {
+	oldStr = strings.ReplaceAll(oldStr, " ", "")
+	str = strings.ReplaceAll(str, " ", "")
+	return strings.Contains(oldStr, str)
+}
+
+// capitalize 首字母大写
+func capitalize(s string) string {
+	if s == "" {
+		return ""
+	}
+	runes := []rune(s)
+	runes[0] = unicode.ToUpper(runes[0])
+	return string(runes)
 }

@@ -12,13 +12,12 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"unicode"
 )
 
 const (
 	serviceType         = "service"
 	serviceTemplateFile = "service.tmpl"
-	DIFilepath          = "internal/container/service/service_container.go"
+	DIServiceFilepath   = "internal/container/service/service_container.go"
 )
 
 func init() {
@@ -43,7 +42,7 @@ var serviceCommand = &cobra.Command{
 
 func createService() {
 	fmt.Println(xprintf.Blue("creating service file ..."))
-	newPath := getDirPath(ServiceDirPath, path)
+	newPath := getDirPath(ServiceDirPath, serviceType, path)
 
 	fileNames := stringToSplit(fileName)
 	isOverwrite := checkFileExists(newPath, fileNames, serviceType)
@@ -81,9 +80,9 @@ func generateService(fileName string, outputFilePath, newPath string) {
 		return
 	}
 
-	err = diService(DIFilepath, structName, namespacePath)
+	err = diService(DIServiceFilepath, structName, namespacePath)
 	if err != nil {
-		fmt.Println(xprintf.Red(fmt.Sprintf("更新 %s 失败: %+v", DIFilepath, err)))
+		fmt.Println(xprintf.Red(fmt.Sprintf("更新 %s 失败: %+v", DIServiceFilepath, err)))
 		return
 	}
 
@@ -182,21 +181,4 @@ func diService(filePath, newService, newServicePath string) error {
 	}
 
 	return nil
-}
-
-// isStrEqual 判断两个字符串是否相等
-func isStrEqual(oldStr, str string) bool {
-	oldStr = strings.ReplaceAll(oldStr, " ", "")
-	str = strings.ReplaceAll(str, " ", "")
-	return strings.Contains(oldStr, str)
-}
-
-// capitalize 首字母大写
-func capitalize(s string) string {
-	if s == "" {
-		return ""
-	}
-	runes := []rune(s)
-	runes[0] = unicode.ToUpper(runes[0])
-	return string(runes)
 }

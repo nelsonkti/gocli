@@ -65,7 +65,7 @@ func createModel() {
 		return
 	}
 
-	newPath := getDirPath(ModelDirPath, path)
+	newPath := getDirPath(ModelDirPath, ModelType, path)
 
 	db, err := gorm.Open(mysql.Open(database))
 	if err != nil {

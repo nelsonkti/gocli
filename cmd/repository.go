@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/gobuffalo/packr/v2"
 	"github.com/spf13/cobra"
@@ -8,6 +9,8 @@ import (
 	"gocli/util/template"
 	"gocli/util/xfile"
 	"gocli/util/xprintf"
+	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -23,6 +26,7 @@ const (
 	repositoryType         = "repository"
 	repositoryTemplateFile = "repository.tmpl"
 	fileIOCClassType       = "model"
+	DIRepositoryFilepath   = "internal/container/repository/repository_container.go"
 )
 
 func init() {
@@ -47,7 +51,7 @@ var repositoryCommand = &cobra.Command{
 
 func createRepository() {
 	fmt.Println(xprintf.Blue("creating repository file ..."))
-	newPath := getDirPath(RepositoryDirPath, path)
+	newPath := getDirPath(RepositoryDirPath, repositoryType, path)
 	fileNames := stringToSplit(fileName)
 	isOverwrite := checkFileExists(newPath, fileNames, repositoryType)
 
@@ -95,5 +99,112 @@ func generateRepository(fileName string, outputFilePath, newPath string) {
 		fmt.Println(xprintf.Red(fmt.Sprintf("生成 %s 失败: %+v", outputFilePath, err)))
 		return
 	}
+
+	diRepository(DIRepositoryFilepath, structName, newPath, structInfo)
+
 	fmt.Println(xprintf.Green("CREATED ") + outputFilePath)
+}
+
+// diRepository 依赖注入仓库
+func diRepository(filePath, newService, newServicePath string, structInfo repositoryStructInfo) error {
+	// 读取文件内容
+	file, err := os.Open(filePath)
+	if err != nil {
+		fmt.Printf("Error opening file: %v\n", err)
+		return nil
+	}
+	defer file.Close()
+
+	packageName := filepath.Base(newServicePath)
+	// 新的导入语句和结构体字段
+	newImport := fmt.Sprintf("\t\"%s/%s\"\n", structInfo.ModName, strings.ReplaceAll(newServicePath, RelativeSymbol, ""))
+	newModImport := fmt.Sprintf("\t\"%s/%s\"\n", structInfo.ModName, structInfo.IOCNamespace)
+
+	originalContainerField := fmt.Sprintf("%sRepository *%s.%sRepository", capitalize(newService), packageName, capitalize(newService))
+	containerField := fmt.Sprintf("\t%s  // %s\n", originalContainerField, name)
+
+	registerModelField := fmt.Sprintf("%s.New%s(db)", structInfo.IOCPackage, structInfo.IOCStructName)
+	originalRegisterField := fmt.Sprintf("%sRepository: %s.New%sRepository(%s, log)", capitalize(newService), packageName, capitalize(newService), registerModelField)
+	registerField := fmt.Sprintf("\t\t%s, // %s\n", originalRegisterField, name)
+
+	// 读取文件内容并处理
+	var updatedContent strings.Builder
+	scanner := bufio.NewScanner(file)
+	importFound := false
+	containerFound := false
+	registerContainerFound := false
+
+	importExists := false
+	importModelExists := false
+	containerExists := false
+	registerContainerExists := false
+
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if strings.Contains(line, newServicePath) {
+			importExists = true
+		}
+
+		if strings.Contains(line, structInfo.IOCNamespace) {
+			importModelExists = true
+		}
+
+		if strings.Contains(line, "import (") {
+			importFound = true
+		}
+		if importFound && strings.TrimSpace(line) == ")" {
+			if !importExists {
+				updatedContent.WriteString(newImport)
+			}
+			if !importModelExists {
+				updatedContent.WriteString(newModImport)
+			}
+			importFound = false
+		}
+
+		if isStrEqual(line, originalContainerField) {
+			containerExists = true
+		}
+
+		if strings.Contains(line, "type Container struct {") {
+			containerFound = true
+		}
+		if containerFound && strings.TrimSpace(line) == "}" {
+			if !containerExists {
+				updatedContent.WriteString(containerField)
+			}
+			containerFound = false
+		}
+
+		if isStrEqual(line, originalRegisterField) {
+			registerContainerExists = true
+		}
+
+		if strings.Contains(line, "return &Container{") {
+			registerContainerFound = true
+		}
+		if registerContainerFound && strings.TrimSpace(line) == "}" {
+			if !registerContainerExists {
+				updatedContent.WriteString(registerField)
+			}
+			registerContainerFound = false
+		}
+
+		updatedContent.WriteString(line + "\n")
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Printf("Error reading file: %v\n", err)
+		return nil
+	}
+
+	// 将更新后的内容写回原始文件
+	err = os.WriteFile(filePath, []byte(updatedContent.String()), 0644)
+	if err != nil {
+		fmt.Printf("Error writing updated file: %v\n", err)
+		return nil
+	}
+
+	return nil
 }
