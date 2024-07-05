@@ -100,7 +100,11 @@ func generateRepository(fileName string, outputFilePath, newPath string) {
 		return
 	}
 
-	diRepository(DIRepositoryFilepath, structName, newPath, structInfo)
+	err = diRepository(DIRepositoryFilepath, structName, newPath, structInfo)
+	if err != nil {
+		fmt.Println(xprintf.Red(fmt.Sprintf("更新 %s 失败: %+v", DIServiceFilepath, err)))
+		return
+	}
 
 	fmt.Println(xprintf.Green("CREATED ") + outputFilePath)
 }
