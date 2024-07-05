@@ -10,3 +10,4 @@ convention
 vendor/
 
 gocli
+/internal/
