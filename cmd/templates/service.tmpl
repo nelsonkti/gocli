@@ -1,0 +1,15 @@
+package {{.Package}}
+
+import (
+	"{{.ModName}}/internal/server"
+)
+
+// {{.StructName}} {{.StructComment}}
+type {{.StructName}} struct {
+	svc *server.SvcContext
+}
+
+// New{{.StructName}} 新{{.StructComment}}实例
+func New{{.StructName}}(svc *server.SvcContext) *{{.StructName}} {
+	return &{{.StructName}}{svc: svc}
+}

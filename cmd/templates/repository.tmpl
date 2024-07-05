@@ -1,0 +1,17 @@
+package {{.Package}}
+
+import (
+	"{{.ModName}}/{{.IOCNamespace}}"
+	"{{.ModName}}/internal/repository"
+	"{{.ModName}}/util/xlog"
+)
+
+// {{.StructName}} {{.StructComment}}
+type {{.StructName}} struct {
+	*repository.DBRepository
+}
+
+// New{{.StructName}} 新{{.StructComment}}实例
+func New{{.StructName}}(model *{{.Package}}.{{.IOCStructName}}, log *xlog.Log) *{{.StructName}} {
+	return &{{.StructName}}{repository.NewDBRepository(model, log)}
+}
