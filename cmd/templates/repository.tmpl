@@ -12,6 +12,6 @@ type {{.StructName}} struct {
 }
 
 // New{{.StructName}} 新{{.StructComment}}实例
-func New{{.StructName}}(model *{{.Package}}.{{.IOCStructName}}, log *xlog.Log) *{{.StructName}} {
+func New{{.StructName}}(model *{{.IOCPackage}}.{{.IOCStructName}}, log *xlog.Log) *{{.StructName}} {
 	return &{{.StructName}}{repository.NewDBRepository(model, log)}
 }
