@@ -1,4 +1,4 @@
-module github.com/nelsonkti/gocli
+module gocli
 
 go 1.20
 

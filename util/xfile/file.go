@@ -2,7 +2,7 @@ package xfile
 
 import (
 	"fmt"
-	"github.com/nelsonkti/gocli/util/xstring"
+	"gocli/util/xstring"
 	"os"
 	"path/filepath"
 	"strings"

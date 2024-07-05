@@ -1,0 +1,17 @@
+package {{.Package}}
+
+import (
+	"context"
+	"fmt"
+	"{{.ModName}}/internal/server"
+	"{{.ModName}}/{{.Namespace}}"
+)
+
+type {{.StructName}}Handler struct {
+	svc *server.SvcContext
+	{{.pbPkgName}}.UnimplementedSayWhatServer // Embedding for forward compatibility
+}
+
+func New{{.StructName}}Handler(svc *server.SvcContext) *{{.StructName}}Handler {
+	return &{{.StructName}}Handler{svc: svc}
+}

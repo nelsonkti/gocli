@@ -2,12 +2,20 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/nelsonkti/gocli/util/xprintf"
+	"github.com/gobuffalo/packr/v2"
 	"github.com/spf13/cobra"
+	"gocli/util/template"
+	"gocli/util/xfile"
+	"gocli/util/xprintf"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+)
+
+const (
+	rpcTemplateFile = "rpc.tmpl"
+	RPCOutPutDir    = "internal/rpc/server"
 )
 
 func init() {
@@ -18,7 +26,7 @@ func init() {
 }
 
 var protobufCommand = &cobra.Command{
-	Use:   "make:pd",
+	Use:   "make:rpc",
 	Short: "Generate Protobuf files",
 	Long:  `This command generates Go files from Protobuf definitions.`,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -62,7 +70,7 @@ func generateProtobuf(protoFile string) error {
 	genGoGrpcPath := os.Getenv("GOPATH") + "/bin/protoc-gen-go-grpc"
 
 	// Prepare the command
-	outDir := filepath.Join(filepath.Dir(protoFile), "pb")
+	outDir := filepath.Dir(protoFile)
 	if err := os.MkdirAll(outDir, os.ModePerm); err != nil {
 		return fmt.Errorf("failed to create output directory: %v", err)
 	}
@@ -84,7 +92,30 @@ func generateProtobuf(protoFile string) error {
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("%v: %v", err, stderr.String())
 	}
-
+	generateRpcServer(protoFile)
 	fmt.Println(out.String())
+	return nil
+}
+
+func generateRpcServer(fileP string) error {
+	// 读取文件内容
+	file, err := os.Open(fileP)
+	if err != nil {
+		fmt.Printf("Error opening file: %v\n", err)
+		return nil
+	}
+	defer file.Close()
+
+	namespace := filepath.Dir(fileP)
+	packageName := filepath.Base(namespace)
+	modName := xfile.GetModPath(RelativeSymbol)
+	fmt.Println(file)
+	fmt.Println(modName)
+	fmt.Println(packageName)
+
+	box := packr.New(tmplPath, tmplPath)
+	tmpl, _ := box.FindString(rpcTemplateFile)
+	err := template.WriteFile(RPCOutPutDir, tmpl, structInfo)
+
 	return nil
 }

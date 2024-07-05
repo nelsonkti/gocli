@@ -1,0 +1,20 @@
+syntax = "proto3";
+option go_package = ".;protobuf";
+
+message SayRequest {
+  string name = 1;
+}
+
+message SayResponse {
+  string name = 1;
+}
+
+service SayWhat {
+  rpc SayHello (SayRequest)returns(SayResponse){}
+  rpc SayHello2 (SayRequest)returns(SayResponse){}
+}
+
+service SayWhatK {
+  rpc SayHello (SayRequest)returns(SayResponse){}
+  rpc SayHello2 (SayRequest)returns(SayResponse){}
+}
