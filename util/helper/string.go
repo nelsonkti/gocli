@@ -35,3 +35,23 @@ func Capitalize(s string) string {
 	runes[0] = unicode.ToUpper(runes[0])
 	return string(runes)
 }
+
+// ToSnakeCase 将驼峰命名法的字符串转换为下划线命名法
+func ToSnakeCase(s string) string {
+	var sb strings.Builder
+
+	for i, r := range s {
+		if unicode.IsUpper(r) {
+			// 如果不是第一个字符，则在前面添加下划线
+			if i > 0 {
+				sb.WriteRune('_')
+			}
+			// 将大写字母转换为小写字母
+			sb.WriteRune(unicode.ToLower(r))
+		} else {
+			sb.WriteRune(r)
+		}
+	}
+
+	return sb.String()
+}

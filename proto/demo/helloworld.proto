@@ -9,9 +9,17 @@ message SayResponse {
   string name = 1;
 }
 
+message Say2Request {
+  string name = 1;
+}
+
+message Say2Response {
+  string name = 1;
+}
+
 service SayWhat {
   rpc SayHello (SayRequest)returns(SayResponse){}
-  rpc SayHello2 (SayRequest)returns(SayResponse){}
+  rpc SayHello2 (Say2Request)returns(Say2Response){}
 }
 
 service SayWhatK {

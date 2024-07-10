@@ -28,7 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SayWhatClient interface {
 	SayHello(ctx context.Context, in *SayRequest, opts ...grpc.CallOption) (*SayResponse, error)
-	SayHello2(ctx context.Context, in *SayRequest, opts ...grpc.CallOption) (*SayResponse, error)
+	SayHello2(ctx context.Context, in *Say2Request, opts ...grpc.CallOption) (*Say2Response, error)
 }
 
 type sayWhatClient struct {
@@ -48,8 +48,8 @@ func (c *sayWhatClient) SayHello(ctx context.Context, in *SayRequest, opts ...gr
 	return out, nil
 }
 
-func (c *sayWhatClient) SayHello2(ctx context.Context, in *SayRequest, opts ...grpc.CallOption) (*SayResponse, error) {
-	out := new(SayResponse)
+func (c *sayWhatClient) SayHello2(ctx context.Context, in *Say2Request, opts ...grpc.CallOption) (*Say2Response, error) {
+	out := new(Say2Response)
 	err := c.cc.Invoke(ctx, SayWhat_SayHello2_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -62,7 +62,7 @@ func (c *sayWhatClient) SayHello2(ctx context.Context, in *SayRequest, opts ...g
 // for forward compatibility
 type SayWhatServer interface {
 	SayHello(context.Context, *SayRequest) (*SayResponse, error)
-	SayHello2(context.Context, *SayRequest) (*SayResponse, error)
+	SayHello2(context.Context, *Say2Request) (*Say2Response, error)
 	mustEmbedUnimplementedSayWhatServer()
 }
 
@@ -73,7 +73,7 @@ type UnimplementedSayWhatServer struct {
 func (UnimplementedSayWhatServer) SayHello(context.Context, *SayRequest) (*SayResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
 }
-func (UnimplementedSayWhatServer) SayHello2(context.Context, *SayRequest) (*SayResponse, error) {
+func (UnimplementedSayWhatServer) SayHello2(context.Context, *Say2Request) (*Say2Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SayHello2 not implemented")
 }
 func (UnimplementedSayWhatServer) mustEmbedUnimplementedSayWhatServer() {}
@@ -108,7 +108,7 @@ func _SayWhat_SayHello_Handler(srv interface{}, ctx context.Context, dec func(in
 }
 
 func _SayWhat_SayHello2_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SayRequest)
+	in := new(Say2Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func _SayWhat_SayHello2_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: SayWhat_SayHello2_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SayWhatServer).SayHello2(ctx, req.(*SayRequest))
+		return srv.(SayWhatServer).SayHello2(ctx, req.(*Say2Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }

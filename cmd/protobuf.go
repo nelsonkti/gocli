@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gobuffalo/packr/v2"
 	"github.com/spf13/cobra"
+	"gocli/util/helper"
 	"gocli/util/template"
 	"gocli/util/xfile"
 	"gocli/util/xprintf"
@@ -99,23 +100,51 @@ func generateProtobuf(protoFile string) error {
 
 func generateRpcServer(fileP string) error {
 	// 读取文件内容
-	file, err := os.Open(fileP)
+	data, err := os.ReadFile(fileP)
 	if err != nil {
 		fmt.Printf("Error opening file: %v\n", err)
 		return nil
 	}
-	defer file.Close()
 
+	protoServices, err := RpcDecoder(string(data))
+	if err != nil {
+		return fmt.Errorf("protobuf Error decoding")
+	}
+	for _, protoService := range protoServices {
+		if protoService.Name == "" {
+			continue
+		}
+		err := generateRpcHandler(fileP, protoService)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	return nil
+}
+
+func generateRpcHandler(fileP string, protoService ProtoService) error {
+	var structInfo protobufStructInfo
 	namespace := filepath.Dir(fileP)
-	packageName := filepath.Base(namespace)
-	modName := xfile.GetModPath(RelativeSymbol)
-	fmt.Println(file)
-	fmt.Println(modName)
-	fmt.Println(packageName)
+	structInfo.Namespace = namespace
+	structInfo.Package = filepath.Base(namespace)
+	structInfo.PbPkgName = structInfo.Package
+	structInfo.ModName = xfile.GetModPath(RelativeSymbol)
+	structInfo.StructName = protoService.Name
+	structInfo.PbPkgName = protoService.PbPkgName
+	structInfo.ProtoService = protoService
+
+	fileOutputPath := namespace + "/"
+	newOutPutDir := strings.ReplaceAll(fileOutputPath, "proto", RPCOutPutDir)
+
+	xfile.MkdirAll(newOutPutDir)
 
 	box := packr.New(tmplPath, tmplPath)
 	tmpl, _ := box.FindString(rpcTemplateFile)
-	err := template.WriteFile(RPCOutPutDir, tmpl, structInfo)
+	err := template.WriteFile(newOutPutDir+helper.ToSnakeCase(protoService.Name)+".go", tmpl, structInfo)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
