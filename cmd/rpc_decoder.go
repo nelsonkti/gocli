@@ -9,11 +9,13 @@ import (
 type ProtoService struct {
 	PbPkgName string
 	Name      string
+	Comment   string
 	Methods   []Method
 }
 
 type Method struct {
 	Name     string
+	Comment  string
 	Request  string
 	Response string
 }
@@ -29,7 +31,7 @@ func RpcDecoder(protoContent string) ([]ProtoService, error) {
 	// 按行分割Proto内容
 	var currentService *ProtoService
 	lines := strings.Split(protoContent, "\n")
-	for _, line := range lines {
+	for k, line := range lines {
 		line = strings.TrimSpace(line)
 		if line == "" {
 			continue
@@ -54,9 +56,17 @@ func RpcDecoder(protoContent string) ([]ProtoService, error) {
 			if currentService != nil {
 				services = append(services, *currentService)
 			}
+
+			// 增加服务注释
+			comment := ""
+			commentKey := k - 1
+			if commentKey > 0 && lines[commentKey] != "" && strings.Contains(lines[commentKey], "//") {
+				comment = strings.ReplaceAll(lines[commentKey], "//", "// "+serviceMatches[1]+"Handler")
+			}
 			currentService = &ProtoService{
 				PbPkgName: currentService.PbPkgName, // 保持相同包名
 				Name:      serviceMatches[1],
+				Comment:   comment,
 			}
 			continue
 		}
@@ -64,8 +74,16 @@ func RpcDecoder(protoContent string) ([]ProtoService, error) {
 		// 匹配rpc方法定义
 		methodMatches := methodRegex.FindStringSubmatch(line)
 		if len(methodMatches) > 0 && currentService != nil {
+			// 增加服务注释
+			methodComment := ""
+			commentKey := k - 1
+			if commentKey > 0 && lines[commentKey] != "" && strings.Contains(lines[commentKey], "//") {
+				methodComment = strings.ReplaceAll(lines[commentKey], "//", "// "+methodMatches[1])
+				methodComment = strings.TrimLeft(methodComment, " ")
+			}
 			method := Method{
 				Name:     methodMatches[1],
+				Comment:  methodComment,
 				Request:  methodMatches[2],
 				Response: methodMatches[3],
 			}
