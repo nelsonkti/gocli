@@ -16,7 +16,7 @@ func init() {
 
 var mrsCommand = &cobra.Command{
 	Use:   "make:mrs",
-	Short: "create a new model file",
+	Short: "Automatically generate model, repository, and service files.",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		zhName = ModelZhName

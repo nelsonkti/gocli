@@ -14,11 +14,7 @@ import (
 )
 
 var (
-	database             = ""
-	tableName            = ""
-	ModelNamespace       = ""
-	ModelNamespacePoint  = ""
-	ModelStructNameModel = ""
+	database = ""
 )
 
 const (
