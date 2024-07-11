@@ -7,11 +7,13 @@
   |___/                                     
 ```
 
-## gcli 脚手架工具：快速搭建项目框架
+## gocli 脚手架工具
+gocli 脚手架工具
+这是一款自动生成项目模板的工具，它能根据用户的选择和需求，创建项目的目录结构、文件、依赖项等。使用这个脚手架工具可以节省手动创建和配置项目的时间和精力，从而让开发者更专注于业务逻辑的开发
 
-### 安装 gcli 工具
+### 安装 gocli 工具
 
-使用以下命令安装 gcli 工具：
+使用以下命令安装 gocli 工具：
 
 ```sh
 go get -u github.com/nelsonkti/gocli
@@ -19,7 +21,7 @@ go get -u github.com/nelsonkti/gocli
 
 ### 配置环境变量
 
-对于 Windows 用户，如果希望全局使用 `gcli` 命令，请将其可执行文件路径 (`${GOPATH}/src/bin/gocli.exe`) 添加到系统的环境变量中。
+对于 Windows 用户，如果希望全局使用 `gocli` 命令，请将其可执行文件路径 (`${GOPATH}/src/bin/gocli.exe`) 添加到系统的环境变量中。
 
 ### 使用示例
 
