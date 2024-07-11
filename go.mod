@@ -3,7 +3,7 @@ module github.com/nelsonkti/gocli
 go 1.20
 
 require (
-	github.com/gobuffalo/packr/v2 v2.8.3
+	github.com/gobuffalo/packr/v2 v2.8.1
 	github.com/nacos-group/nacos-sdk-go v1.1.4
 	github.com/spf13/cobra v1.8.1
 	github.com/timest/env v0.0.0-20180717050204-5fce78d35255
