@@ -1,5 +1,5 @@
-//go:build Windows
-// +build Windows
+//go:build windows
+// +build windows
 
 package xprintf
 
