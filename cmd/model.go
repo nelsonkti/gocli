@@ -87,7 +87,7 @@ func createModel() {
 		"smallint":  func(columnType gorm.ColumnType) (dataType string) { return "int64" },
 		"mediumint": func(columnType gorm.ColumnType) (dataType string) { return "int64" },
 		"bigint":    func(columnType gorm.ColumnType) (dataType string) { return "int64" },
-		"int":       func(columnType gorm.ColumnType) (dataType string) { return "int64" },
+		"int":       func(columnType gorm.ColumnType) (dataType string) { return "uint64" },
 	}
 	g.WithDataTypeMap(dataMap)
 
