@@ -1,6 +1,6 @@
 package main
 
-import "github.com/nelsonkti/gocli/cmd"
+import "gocli/cmd"
 
 func main() {
 	cmd.Execute()

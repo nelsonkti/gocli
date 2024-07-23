@@ -3,11 +3,11 @@ package cmd
 import (
 	"fmt"
 	"github.com/gobuffalo/packr/v2"
-	"github.com/nelsonkti/gocli/util/helper"
-	"github.com/nelsonkti/gocli/util/template"
-	"github.com/nelsonkti/gocli/util/xfile"
-	"github.com/nelsonkti/gocli/util/xprintf"
 	"github.com/spf13/cobra"
+	"gocli/util/helper"
+	"gocli/util/template"
+	"gocli/util/xfile"
+	"gocli/util/xprintf"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -54,7 +54,7 @@ func scanProtobuf(path string) {
 	})
 
 	if err != nil {
-		xprintf.Red(fmt.Sprintf("Failed to scan proto directory: %v\n", err))
+		fmt.Println(xprintf.Red(fmt.Sprintf("Failed to scan proto directory: %v\n", err)))
 		return
 	}
 

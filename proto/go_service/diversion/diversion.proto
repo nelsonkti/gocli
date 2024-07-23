@@ -1,0 +1,1168 @@
+syntax = "proto3";
+
+option go_package = ".;diversion";
+
+package diversion;
+
+// Already Exist Table:
+// AbtestWhiteUser
+// AbtestExperimentGroup
+// AbtestExperiment
+// GlobalSecret
+// AbtestUserGroup
+// AbtestExperimentResult
+// AbtestUserGroupConf
+// TblUserAlipay
+// AutoDispatchDecisionPath
+// CommodityActivityOrderSpu
+// TblDispatchOrderFactor
+// TblServerDistributeLimitRules
+// DistributeOrderLog
+// TblDispatchServerFlowPool
+// AutoDispatchDecisionPathLink
+// AutoDispatchConfigLogNew
+// AutoDispatchDecisionRule
+// AutoDispatchDecisionPathOrder
+// DwdDistributeValidOrderView
+// DirectedDispatchServer
+// Exist Table End
+
+//指定message生成api struct
+// Api Struct Gen
+// Struct Gen End
+
+// Message Record Start
+//--------------------------------实验配置白名单表--------------------------------
+message AbtestWhiteUser {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;          //自增ID
+  int64 experimentId = 2; //实验配置主表主键ID
+  int64 groupId = 3;      //实验配置分组表主键ID
+  int64 createdAt = 4;    //创建时间
+  int64 updatedAt = 5;    //更新时间
+  string distinctId = 6;  //白名单 用户ID/支付宝ID/匿名ID
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AbtestWhiteUserFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;       // pageNo
+  int64 pageSize = 2;     // pageSize
+  uint64 id = 3;          //自增ID
+  int64 experimentId = 4; //实验配置主表主键ID
+  int64 groupId = 5;      //实验配置分组表主键ID
+  int64 createdAt = 6;    //创建时间
+  int64 updatedAt = 7;    //更新时间
+  string distinctId = 8;  //白名单 用户ID/支付宝ID/匿名ID
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AbtestWhiteUserList {
+  repeated AbtestWhiteUser abtestWhiteUser = 1; // abtestWhiteUserList
+  int64 totalPage = 2;                          //
+  int64 totalCount = 3;                         //
+  int64 curPage = 4;                            //
+}
+//--------------------------------实验配置分组表--------------------------------
+message AbtestExperimentGroup {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;          //自增ID
+  int64 experimentId = 2; //实验配置主表主键ID
+  string name = 3;        //分组名称
+  int64 type = 4;         //分组类型：0:对照组 1:实验组
+  string paramId = 5;     //参数ID
+  int64 paramType = 6;    //参数类型：1：number 2：string 3：boolean  4：json
+  string paramVal = 7;    //参数值
+  int64 flowPercent = 8;  //流量分配百分比 如: 90
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AbtestExperimentGroupFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;       // pageNo
+  int64 pageSize = 2;     // pageSize
+  uint64 id = 3;          //自增ID
+  int64 experimentId = 4; //实验配置主表主键ID
+  string name = 5;        //分组名称
+  int64 type = 6;         //分组类型：0:对照组 1:实验组
+  string paramId = 7;     //参数ID
+  int64 paramType = 8;    //参数类型：1：number 2：string 3：boolean  4：json
+  string paramVal = 9;    //参数值
+  int64 flowPercent = 10; //流量分配百分比 如: 90
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AbtestExperimentGroupList {
+  repeated AbtestExperimentGroup abtestExperimentGroup = 1; // abtestExperimentGroupList
+  int64 totalPage = 2;                                      //
+  int64 totalCount = 3;                                     //
+  int64 curPage = 4;                                        //
+}
+//--------------------------------实验配置主表--------------------------------
+message AbtestExperiment {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;               //自增ID
+  string name = 2;             //实验名称
+  string terminal = 3;         //渠道端口 如：alipay.indi
+  int64 experimentType = 4;    //实验模式类型：1：AB 2：AA
+  int64 userDimType = 5;       //用户维度：1：USERID，2：ALIPAYID
+  string experimentUniqId = 6; //实验ID唯一标识
+  int64 userGroupId = 7;       //用户群ID：analyze_ab_user_group_conf表主键ID
+  string startVersion = 8;     //开始版本1.0.0
+  string endVersion = 9;       //结束版本2.0.0
+  int64 startTime = 10;        //生效时间
+  int64 endTime = 11;          //结束时间
+  int64 createdBy = 12;        //创建人ID
+  int64 status = 13;           //运行状态 0:审核中 1：未开始  2：运行中 3：已结束
+  int64 flowPercent = 14;      //流量分配百分比 如: 90
+  int64 createdAt = 15;        //创建时间
+  int64 updatedAt = 16;        //更新时间
+  int64 userNumber = 17;       //实验参与总人数
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AbtestExperimentFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;            // pageNo
+  int64 pageSize = 2;          // pageSize
+  uint64 id = 3;               //自增ID
+  string name = 4;             //实验名称
+  string terminal = 5;         //渠道端口 如：alipay.indi
+  int64 experimentType = 6;    //实验模式类型：1：AB 2：AA
+  int64 userDimType = 7;       //用户维度：1：USERID，2：ALIPAYID
+  string experimentUniqId = 8; //实验ID唯一标识
+  int64 userGroupId = 9;       //用户群ID：analyze_ab_user_group_conf表主键ID
+  string startVersion = 10;    //开始版本1.0.0
+  string endVersion = 11;      //结束版本2.0.0
+  int64 startTime = 12;        //生效时间
+  int64 endTime = 13;          //结束时间
+  int64 createdBy = 14;        //创建人ID
+  int64 status = 15;           //运行状态 0:审核中 1：未开始  2：运行中 3：已结束
+  int64 flowPercent = 16;      //流量分配百分比 如: 90
+  int64 createdAt = 17;        //创建时间
+  int64 updatedAt = 18;        //更新时间
+  int64 userNumber = 19;       //实验参与总人数
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AbtestExperimentList {
+  repeated AbtestExperiment abtestExperiment = 1; // abtestExperimentList
+  int64 totalPage = 2;                            //
+  int64 totalCount = 3;                           //
+  int64 curPage = 4;                              //
+}
+//--------------------------------globalSecret--------------------------------
+message GlobalSecret {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;          //主键
+  int64 parentId = 2;     //父级id
+  string secretKey = 3;   //密钥名称
+  string secretValue = 4; //密钥内容
+  string secretDesc = 5;  //密钥描述
+  int64 createdBy = 6;    //创建人id (0代表系统初始化创建)
+  int64 updatedBy = 7;    //修改人id (0代表系统初始化创建)
+  int64 createdAt = 8;    //创建时间
+  int64 updatedAt = 9;    //最后修改时间
+  int64 isDeleted = 10;   //是否删除(0/未删除 1/删除)
+  int64 deletedAt = 11;   //删除时间
+  int64 deletedBy = 12;   //删除人id
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message GlobalSecretFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;       // pageNo
+  int64 pageSize = 2;     // pageSize
+  uint64 id = 3;          //主键
+  int64 parentId = 4;     //父级id
+  string secretKey = 5;   //密钥名称
+  string secretValue = 6; //密钥内容
+  string secretDesc = 7;  //密钥描述
+  int64 createdBy = 8;    //创建人id (0代表系统初始化创建)
+  int64 updatedBy = 9;    //修改人id (0代表系统初始化创建)
+  int64 createdAt = 10;   //创建时间
+  int64 updatedAt = 11;   //最后修改时间
+  int64 isDeleted = 12;   //是否删除(0/未删除 1/删除)
+  int64 deletedAt = 13;   //删除时间
+  int64 deletedBy = 14;   //删除人id
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message GlobalSecretList {
+  repeated GlobalSecret globalSecret = 1; // globalSecretList
+  int64 totalPage = 2;                    //
+  int64 totalCount = 3;                   //
+  int64 curPage = 4;                      //
+}
+//--------------------------------abtestUserGroup--------------------------------
+message AbtestUserGroup {
+  // Database Tag Begin. DO NOT EDIT !!!
+  int64 id = 1;          // id
+  string entityId = 2;   // entityId
+  int64 entityType = 3;  // entityType
+  int64 userGroupId = 4; // userGroupId
+  int64 createdAt = 5;   // createdAt
+  int64 updatedAt = 6;   // updatedAt
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AbtestUserGroupFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;      // pageNo
+  int64 pageSize = 2;    // pageSize
+  int64 id = 3;          // id
+  string entityId = 4;   // entityId
+  int64 entityType = 5;  // entityType
+  int64 userGroupId = 6; // userGroupId
+  int64 createdAt = 7;   // createdAt
+  int64 updatedAt = 8;   // updatedAt
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AbtestUserGroupList {
+  repeated AbtestUserGroup abtestUserGroup = 1; // abtestUserGroupList
+  int64 totalPage = 2;                          //
+  int64 totalCount = 3;                         //
+  int64 curPage = 4;                            //
+}
+//--------------------------------abtestExperimentResult--------------------------------
+message AbtestExperimentResult {
+  // Database Tag Begin. DO NOT EDIT !!!
+  int64 experimentId = 1;          // experimentId
+  string entityId = 2;             // entityId
+  int64 entityType = 3;            // entityType
+  int64 experimentGroupId = 4;     // experimentGroupId
+  string experimentGroupParam = 5; // experimentGroupParam
+  int64 createdAt = 6;             // createdAt
+  int64 updatedAt = 7;             // updatedAt
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AbtestExperimentResultFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;                // pageNo
+  int64 pageSize = 2;              // pageSize
+  int64 experimentId = 3;          // experimentId
+  string entityId = 4;             // entityId
+  int64 entityType = 5;            // entityType
+  int64 experimentGroupId = 6;     // experimentGroupId
+  string experimentGroupParam = 7; // experimentGroupParam
+  int64 createdAt = 8;             // createdAt
+  int64 updatedAt = 9;             // updatedAt
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AbtestExperimentResultList {
+  repeated AbtestExperimentResult abtestExperimentResult = 1; // abtestExperimentResultList
+  int64 totalPage = 2;                                        //
+  int64 totalCount = 3;                                       //
+  int64 curPage = 4;                                          //
+}
+
+message AbtestExperimentResultCount {
+  int64 totalCount = 1; //
+}
+
+message CreateAbtestExperimentResultResp {
+  // Database Tag Begin. DO NOT EDIT !!!
+  int64 experimentId = 1;          // experimentId
+  string entityId = 2;             // entityId
+  int64 entityType = 3;            // entityType
+  int64 experimentGroupId = 4;     // experimentGroupId
+  string experimentGroupParam = 5; // experimentGroupParam
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+//--------------------------------实验用户群配置表--------------------------------
+message AbtestUserGroupConf {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;             //自增ID
+  int64 userFactorId = 2;    //用户因子ID：abtest_user_factor_config表主键ID
+  int64 isAllUser = 3;       //是否全量用户 1：是 0：否
+  string name = 4;           //用户群名称
+  string terminal = 5;       //渠道端口
+  int64 userDimType = 6;     //用户维度：1：USERID，2：ALIPAYID
+  int64 startTime = 7;       //开始时间
+  int64 endTime = 8;         //结束时间
+  int64 userCount = 9;       //冗余字段：用户群数量
+  string remark = 10;        //备注
+  int64 createdBy = 11;      //创建人ID
+  int64 createdAt = 12;      //创建时间
+  int64 updatedAt = 13;      //更新时间
+  int64 userFactorType = 14; //用户群因子类型：1：预设因子 2：自定义因子
+  string rule = 15;          //自定义因子规则
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AbtestUserGroupConfFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;          // pageNo
+  int64 pageSize = 2;        // pageSize
+  uint64 id = 3;             //自增ID
+  int64 userFactorId = 4;    //用户因子ID：abtest_user_factor_config表主键ID
+  int64 isAllUser = 5;       //是否全量用户 1：是 0：否
+  string name = 6;           //用户群名称
+  string terminal = 7;       //渠道端口
+  int64 userDimType = 8;     //用户维度：1：USERID，2：ALIPAYID
+  int64 startTime = 9;       //开始时间
+  int64 endTime = 10;        //结束时间
+  int64 userCount = 11;      //冗余字段：用户群数量
+  string remark = 12;        //备注
+  int64 createdBy = 13;      //创建人ID
+  int64 createdAt = 14;      //创建时间
+  int64 updatedAt = 15;      //更新时间
+  int64 userFactorType = 16; //用户群因子类型：1：预设因子 2：自定义因子
+  string rule = 17;          //自定义因子规则
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AbtestUserGroupConfList {
+  repeated AbtestUserGroupConf abtestUserGroupConf = 1; // abtestUserGroupConfList
+  int64 totalPage = 2;                                  //
+  int64 totalCount = 3;                                 //
+  int64 curPage = 4;                                    //
+}
+//--------------------------------COLUMNAR=1 用户关联支付宝表--------------------------------
+message TblUserAlipay {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 alipayAutoId = 1;        //自增ID
+  string alipayUserId = 2;        //支付宝ID
+  uint64 uid = 3;                 //用户ID
+  string mobile = 4;              //手机
+  string userName = 5;            //真实姓名
+  string avatar = 6;              //头像
+  string nickName = 7;            //用户昵称
+  string province = 8;            //省份
+  string city = 9;                //城市
+  string gender = 10;             //用户性别
+  string userType = 11;           //用户类型
+  string userStatus = 12;         //用户状态
+  string isCertified = 13;        //是否实名
+  string isStudentCertified = 14; //是否学生
+  uint64 zhimaScore = 15;         //芝麻分数
+  uint64 updatedAt = 16;          //更新时间
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message TblUserAlipayFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;               // pageNo
+  int64 pageSize = 2;             // pageSize
+  uint64 alipayAutoId = 3;        //自增ID
+  string alipayUserId = 4;        //支付宝ID
+  uint64 uid = 5;                 //用户ID
+  string mobile = 6;              //手机
+  string userName = 7;            //真实姓名
+  string avatar = 8;              //头像
+  string nickName = 9;            //用户昵称
+  string province = 10;           //省份
+  string city = 11;               //城市
+  string gender = 12;             //用户性别
+  string userType = 13;           //用户类型
+  string userStatus = 14;         //用户状态
+  string isCertified = 15;        //是否实名
+  string isStudentCertified = 16; //是否学生
+  uint64 zhimaScore = 17;         //芝麻分数
+  uint64 updatedAt = 18;          //更新时间
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message TblUserAlipayList {
+  repeated TblUserAlipay tblUserAlipay = 1; // tblUserAlipayList
+  int64 totalPage = 2;                      //
+  int64 totalCount = 3;                     //
+  int64 curPage = 4;                        //
+}
+
+//--------------------------------Allocate--------------------------------
+message AllocateRpcReq {
+  string experimentUniqId = 1; // 实验唯一id
+  string distinctId = 2;       // id(用户id，匿名id)
+  string terminal = 3;         // 终端：0:对照组 1:实验组
+  string version = 4;          // 版本号
+  string modelType = 5;        // 分流模型：目前只支持ab测试
+}
+
+message AllocateRpcResp {
+  int64 experimentId = 1;         // 实验id
+  int64 experimentType = 2;       // 实验类型
+  string experimentUniqId = 3;    // 实验唯一id
+  int64 experimentGroupId = 4;    // 分组id
+  string experimentGroupName = 5; // 分组名称
+  int64 experimentGroupType = 6;  // 分组类型
+  uint32 isWhite = 7;             // 是否是白名单
+  string paramId = 8;             // 参数
+  int64 paramType = 9;            // 参数
+  string paramVal = 10;           // 参数
+  string distinctId = 11;         // 匿名id(用户id，匿名id)
+}
+
+message DispatchRpcReq {
+  int64 OrderId = 1;
+  int64 ActivityId = 2;
+}
+message DispatchRpcResp { int64 ServerId = 1; }
+message QualityRatioLimitReq {
+  int64 OrderId = 1;
+  int64 SpuId = 2;
+  repeated int64 ServerIds = 3;
+}
+message QualityRatioLimitResp { string QualityRatioLimitMap = 1; }
+//--------------------------------自动化派单决策路径表--------------------------------
+message AutoDispatchDecisionPath {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;          // ID
+  uint64 pid = 2;         //父级ID(关联auto_dispatch_decision_path的id)
+  uint64 configId = 3;    //全局配置ID
+  string pathName = 4;    //路径名称
+  string pathDetail = 5;  //路径说明
+  string applyFactor = 6; //应用因子
+  uint64 createdAt = 7;   //创建时间
+  uint64 createdBy = 8;   //创建人
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AutoDispatchDecisionPathFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;       // pageNo
+  int64 pageSize = 2;     // pageSize
+  uint64 id = 3;          // ID
+  uint64 pid = 4;         //父级ID(关联auto_dispatch_decision_path的id)
+  uint64 configId = 5;    //全局配置ID
+  string pathName = 6;    //路径名称
+  string pathDetail = 7;  //路径说明
+  string applyFactor = 8; //应用因子
+  uint64 createdAt = 9;   //创建时间
+  uint64 createdBy = 10;  //创建人
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AutoDispatchDecisionPathList {
+  repeated AutoDispatchDecisionPath autoDispatchDecisionPath = 1; // autoDispatchDecisionPathList
+  int64 totalPage = 2;                                            //
+  int64 totalCount = 3;                                           //
+  int64 curPage = 4;                                              //
+}
+//--------------------------------活动订单spu--------------------------------
+message CommodityActivityOrderSpu {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;         // id
+  int64 orderId = 2;     //订单号
+  int64 goodsRuleId = 3; //活动商品规则ID
+  int64 activityId = 4;  //活动ID
+  int64 categoryId = 5;  //类目ID
+  int64 brandId = 6;     //品牌ID
+  int64 spuModelId = 7;  //型号ID
+  int64 spuType = 8;     //全新度（1全新,2二手）
+  int64 createdAt = 9;   //创建时间
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message CommodityActivityOrderSpuFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;              // pageNo
+  int64 pageSize = 2;            // pageSize
+  repeated string sortField = 3; // sortField
+  repeated string sortType = 4;  // sortType
+  bool genTotal = 5;             // genTotal
+  uint64 id = 6;                 // id
+  int64 orderId = 7;             //订单号
+  int64 goodsRuleId = 8;         //活动商品规则ID
+  int64 activityId = 9;          //活动ID
+  int64 categoryId = 10;         //类目ID
+  int64 brandId = 11;            //品牌ID
+  int64 spuModelId = 12;         //型号ID
+  int64 spuType = 13;            //全新度（1全新,2二手）
+  int64 createdAt = 14;          //创建时间
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message CommodityActivityOrderSpuList {
+  repeated CommodityActivityOrderSpu commodityActivityOrderSpu = 1; // commodityActivityOrderSpuList
+  int64 totalPage = 2;                                              //总页数
+  int64 total = 3;                                                  //总数据量
+  int32 perPage = 4;                                                //当前第几页
+  int32 perSize = 5;                                                //每页数据量
+  int32 count = 6;                                                  //当前页实际数量
+}
+//--------------------------------派单因子表--------------------------------
+message TblDispatchOrderFactor {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;         // ID
+  string factorName = 2; //因子名称
+  uint64 type = 3;       //类型（1数值型，2字符串）
+  uint64 sort = 4;       //分类（1商家，2订单，3活动，4商品）
+  string code = 5;       //因子代码
+  string condition = 6;  //条件值
+  uint64 status = 7;     //状态（1待使用2使用中）
+  uint64 createdAt = 8;  //创建时间
+  uint64 createdBy = 9;  //创建人
+  uint64 updatedAt = 10; //更新时间
+  uint64 updatedBy = 11; //更新人
+  uint64 isDeleted = 12; //是否删除
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message TblDispatchOrderFactorFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;              // pageNo
+  int64 pageSize = 2;            // pageSize
+  repeated string sortField = 3; // sortField
+  repeated string sortType = 4;  // sortType
+  bool genTotal = 5;             // genTotal
+  uint64 id = 6;                 // ID
+  string factorName = 7;         //因子名称
+  uint64 type = 8;               //类型（1数值型，2字符串）
+  uint64 sort = 9;               //分类（1商家，2订单，3活动，4商品）
+  string code = 10;              //因子代码
+  string condition = 11;         //条件值
+  uint64 status = 12;            //状态（1待使用2使用中）
+  uint64 createdAt = 13;         //创建时间
+  uint64 createdBy = 14;         //创建人
+  uint64 updatedAt = 15;         //更新时间
+  uint64 updatedBy = 16;         //更新人
+  uint64 isDeleted = 17;         //是否删除
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message TblDispatchOrderFactorList {
+  repeated TblDispatchOrderFactor tblDispatchOrderFactor = 1; // tblDispatchOrderFactorList
+  int64 totalPage = 2;                                        //总页数
+  int64 total = 3;                                            //总数据量
+  int32 perPage = 4;                                          //当前第几页
+  int32 perSize = 5;                                          //每页数据量
+  int32 count = 6;                                            //当前页实际数量
+}
+//--------------------------------商家派单规则限制表--------------------------------
+message TblServerDistributeLimitRules {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;                //主键id
+  string title = 2;             //自动化任务名称
+  uint64 serverId = 3;          //商家id
+  string weekConfig = 4;        //星期配置
+  uint64 loopWay = 5;           //循环方式 1：单日循环，2：每日循环
+  string businessTimeRules = 6; //营业时间规则
+  string orderNumConfig = 7;    //意愿承接订单数/每日
+  uint64 ruleStatus = 8;        //任务状态 1：进行中，2：已结束
+  uint64 timeStart = 9;         //开始时间
+  uint64 timeEnd = 10;          //结束时间
+  uint64 createdAt = 11;        //创建时间
+  uint64 createdBy = 12;        //创建人
+  uint64 updatedAt = 13;        //更新时间
+  uint64 updatedBy = 14;        //更新人
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message TblServerDistributeLimitRulesFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;              // pageNo
+  int64 pageSize = 2;            // pageSize
+  repeated string sortField = 3; // sortField
+  repeated string sortType = 4;  // sortType
+  bool genTotal = 5;             // genTotal
+  uint64 id = 6;                 //主键id
+  string title = 7;              //自动化任务名称
+  uint64 serverId = 8;           //商家id
+  string weekConfig = 9;         //星期配置
+  uint64 loopWay = 10;           //循环方式 1：单日循环，2：每日循环
+  string businessTimeRules = 11; //营业时间规则
+  string orderNumConfig = 12;    //意愿承接订单数/每日
+  uint64 ruleStatus = 13;        //任务状态 1：进行中，2：已结束
+  uint64 timeStart = 14;         //开始时间
+  uint64 timeEnd = 15;           //结束时间
+  uint64 createdAt = 16;         //创建时间
+  uint64 createdBy = 17;         //创建人
+  uint64 updatedAt = 18;         //更新时间
+  uint64 updatedBy = 19;         //更新人
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message TblServerDistributeLimitRulesList {
+  repeated TblServerDistributeLimitRules tblServerDistributeLimitRules = 1; // tblServerDistributeLimitRulesList
+  int64 totalPage = 2;                                                      //总页数
+  int64 total = 3;                                                          //总数据量
+  int32 perPage = 4;                                                        //当前第几页
+  int32 perSize = 5;                                                        //每页数据量
+  int32 count = 6;                                                          //当前页实际数量
+}
+//--------------------------------派单记录表--------------------------------
+message DistributeOrderLog {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;               //主键ID
+  uint64 orderId = 2;          //订单ID
+  uint64 serverId = 3;         //商家ID
+  string serverName = 4;       //商家名称
+  uint64 status = 5;           //状态；1-已接单、2-拒单
+  uint64 receiveAt = 6;        //接单时间
+  uint64 refuseAt = 7;         //拒单时间
+  uint64 createdUserId = 8;    //创建用户ID
+  string createdUserName = 9;  //创建用户名称
+  uint64 updatedUserId = 10;   //修改用户ID
+  string updatedUserName = 11; //修改用户名称
+  uint64 createdAt = 12;       //创建时间
+  uint64 updatedAt = 13;       //修改时间
+  int64 ruleId = 14;           //派单规则ID
+  uint64 btnStatus = 15;       //商家是否接收派单按钮状态 0：默认，1：开启，2：关闭
+  uint64 version = 16;         //版本 1:默认，2:派单限制
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message DistributeOrderLogFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;              // pageNo
+  int64 pageSize = 2;            // pageSize
+  repeated string sortField = 3; // sortField
+  repeated string sortType = 4;  // sortType
+  bool genTotal = 5;             // genTotal
+  uint64 id = 6;                 //主键ID
+  uint64 orderId = 7;            //订单ID
+  uint64 serverId = 8;           //商家ID
+  string serverName = 9;         //商家名称
+  uint64 status = 10;            //状态；1-已接单、2-拒单
+  uint64 receiveAt = 11;         //接单时间
+  uint64 refuseAt = 12;          //拒单时间
+  uint64 createdUserId = 13;     //创建用户ID
+  string createdUserName = 14;   //创建用户名称
+  uint64 updatedUserId = 15;     //修改用户ID
+  string updatedUserName = 16;   //修改用户名称
+  uint64 createdAt = 17;         //创建时间
+  uint64 updatedAt = 18;         //修改时间
+  int64 ruleId = 19;             //派单规则ID
+  uint64 btnStatus = 20;         //商家是否接收派单按钮状态 0：默认，1：开启，2：关闭
+  uint64 version = 21;           //版本 1:默认，2:派单限制
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message DistributeOrderLogList {
+  repeated DistributeOrderLog distributeOrderLog = 1; // distributeOrderLogList
+  int64 totalPage = 2;                                //总页数
+  int64 total = 3;                                    //总数据量
+  int32 perPage = 4;                                  //当前第几页
+  int32 perSize = 5;                                  //每页数据量
+  int32 count = 6;                                    //当前页实际数量
+}
+//--------------------------------派单商家流量池表--------------------------------
+message TblDispatchServerFlowPool {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;               // ID
+  uint64 serverId = 2;         //商家ID
+  uint64 level = 3;            //商家等级
+  uint64 initLevel = 4;        //初始等级
+  uint64 createdDate = 5;      //创建日期(年月日)
+  uint64 createdAt = 6;        //创建时间
+  uint64 updatedAt = 7;        //更新时间
+  uint64 isColdBoot = 8;       //是否冷启动
+  uint64 canDispatchCount = 9; //可派次数
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message TblDispatchServerFlowPoolFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;              // pageNo
+  int64 pageSize = 2;            // pageSize
+  repeated string sortField = 3; // sortField
+  repeated string sortType = 4;  // sortType
+  bool genTotal = 5;             // genTotal
+  uint64 id = 6;                 // ID
+  uint64 serverId = 7;           //商家ID
+  uint64 level = 8;              //商家等级
+  uint64 initLevel = 9;          //初始等级
+  uint64 createdDate = 10;       //创建日期(年月日)
+  uint64 createdAt = 11;         //创建时间
+  uint64 updatedAt = 12;         //更新时间
+  uint64 isColdBoot = 13;        //是否冷启动
+  uint64 canDispatchCount = 14;  //可派次数
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message TblDispatchServerFlowPoolList {
+  repeated TblDispatchServerFlowPool tblDispatchServerFlowPool = 1; // tblDispatchServerFlowPoolList
+  int64 totalPage = 2;                                              //总页数
+  int64 total = 3;                                                  //总数据量
+  int32 perPage = 4;                                                //当前第几页
+  int32 perSize = 5;                                                //每页数据量
+  int32 count = 6;                                                  //当前页实际数量
+}
+//--------------------------------自动化派单决策路径应用表--------------------------------
+message AutoDispatchDecisionPathLink {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;           // ID
+  uint64 preference = 2;   //优先级
+  uint64 status = 3;       //状态(1开启，2关闭)
+  string applyVersion = 4; //应用版本
+  uint64 createdAt = 5;    //创建时间
+  uint64 createdBy = 6;    //创建人
+  uint64 updatedAt = 7;    //更新时间
+  uint64 updatedBy = 8;    //更新人
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AutoDispatchDecisionPathLinkFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;              // pageNo
+  int64 pageSize = 2;            // pageSize
+  repeated string sortField = 3; // sortField
+  repeated string sortType = 4;  // sortType
+  bool genTotal = 5;             // genTotal
+  uint64 id = 6;                 // ID
+  uint64 preference = 7;         //优先级
+  uint64 status = 8;             //状态(1开启，2关闭)
+  string applyVersion = 9;       //应用版本
+  uint64 createdAt = 10;         //创建时间
+  uint64 createdBy = 11;         //创建人
+  uint64 updatedAt = 12;         //更新时间
+  uint64 updatedBy = 13;         //更新人
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AutoDispatchDecisionPathLinkList {
+  repeated AutoDispatchDecisionPathLink autoDispatchDecisionPathLink = 1; // autoDispatchDecisionPathLinkList
+  int64 totalPage = 2;                                                    //总页数
+  int64 total = 3;                                                        //总数据量
+  int32 perPage = 4;                                                      //当前第几页
+  int32 perSize = 5;                                                      //每页数据量
+  int32 count = 6;                                                        //当前页实际数量
+}
+//--------------------------------自动派单配置日志表--------------------------------
+message AutoDispatchConfigLogNew {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;          // id
+  string configData = 2;  //配置内容
+  int64 type = 3;         //类型：6基础设置,7分仓配置
+  int64 createdAt = 4;    //创建时间
+  int64 createdBy = 5;    //创建人ID
+  string createdName = 6; //创建人名
+  string editModules = 7; //修改模块
+  string editReason = 8;  //修改原因
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AutoDispatchConfigLogNewFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;              // pageNo
+  int64 pageSize = 2;            // pageSize
+  repeated string sortField = 3; // sortField
+  repeated string sortType = 4;  // sortType
+  bool genTotal = 5;             // genTotal
+  uint64 id = 6;                 // id
+  string configData = 7;         //配置内容
+  int64 type = 8;                //类型：6基础设置,7分仓配置
+  int64 createdAt = 9;           //创建时间
+  int64 createdBy = 10;          //创建人ID
+  string createdName = 11;       //创建人名
+  string editModules = 12;       //修改模块
+  string editReason = 13;        //修改原因
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AutoDispatchConfigLogNewList {
+  repeated AutoDispatchConfigLogNew autoDispatchConfigLogNew = 1; // autoDispatchConfigLogNewList
+  int64 totalPage = 2;                                            //总页数
+  int64 total = 3;                                                //总数据量
+  int32 perPage = 4;                                              //当前第几页
+  int32 perSize = 5;                                              //每页数据量
+  int32 count = 6;                                                //当前页实际数量
+}
+//--------------------------------自动化派单规则表--------------------------------
+message AutoDispatchDecisionRule {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;            // ID
+  int64 pid = 2;            //父级ID(关联auto_dispatch_decision_path的id)
+  string selectServer = 3;  //圈选商家
+  string actionExecute = 4; //执行动作
+  uint64 createdAt = 5;     //创建时间
+  uint64 createdBy = 6;     //创建人
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AutoDispatchDecisionRuleFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;              // pageNo
+  int64 pageSize = 2;            // pageSize
+  repeated string sortField = 3; // sortField
+  repeated string sortType = 4;  // sortType
+  bool genTotal = 5;             // genTotal
+  uint64 id = 6;                 // ID
+  int64 pid = 7;                 //父级ID(关联auto_dispatch_decision_path的id)
+  string selectServer = 8;       //圈选商家
+  string actionExecute = 9;      //执行动作
+  uint64 createdAt = 10;         //创建时间
+  uint64 createdBy = 11;         //创建人
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AutoDispatchDecisionRuleList {
+  repeated AutoDispatchDecisionRule autoDispatchDecisionRule = 1; // autoDispatchDecisionRuleList
+  int64 totalPage = 2;                                            //总页数
+  int64 total = 3;                                                //总数据量
+  int32 perPage = 4;                                              //当前第几页
+  int32 perSize = 5;                                              //每页数据量
+  int32 count = 6;                                                //当前页实际数量
+}
+//--------------------------------自动化派单决策路径订单表--------------------------------
+message AutoDispatchDecisionPathOrder {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;        // ID
+  uint64 orderId = 2;   //订单号
+  uint64 linkId = 3;    // auto_dispatch_decision_path_link表ID
+  uint64 createdAt = 4; //创建时间
+  uint64 serverId = 5;  //商家ID
+  uint64 pathId = 6;    //路径ID
+  uint64 ruleId = 7;    //规则ID
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AutoDispatchDecisionPathOrderFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;              // pageNo
+  int64 pageSize = 2;            // pageSize
+  repeated string sortField = 3; // sortField
+  repeated string sortType = 4;  // sortType
+  bool genTotal = 5;             // genTotal
+  uint64 id = 6;                 // ID
+  uint64 orderId = 7;            //订单号
+  uint64 linkId = 8;             // auto_dispatch_decision_path_link表ID
+  uint64 createdAt = 9;          //创建时间
+  uint64 serverId = 10;          //商家ID
+  uint64 pathId = 11;            //路径ID
+  uint64 ruleId = 12;            //规则ID
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message AutoDispatchDecisionPathOrderList {
+  repeated AutoDispatchDecisionPathOrder autoDispatchDecisionPathOrder = 1; // autoDispatchDecisionPathOrderList
+  int64 totalPage = 2;                                                      //总页数
+  int64 total = 3;                                                          //总数据量
+  int32 perPage = 4;                                                        //当前第几页
+  int32 perSize = 5;                                                        //每页数据量
+  int32 count = 6;                                                          //当前页实际数量
+}
+//--------------------------------dwdDistributeValidOrderView--------------------------------
+message DwdDistributeValidOrderView {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;                  // ID
+  uint64 orderId = 2;             //订单号
+  uint64 disServerId = 3;         //派发商家ID
+  uint64 noHandledSign = 4;       //未处理标记
+  uint64 distributeOrderSign = 5; //派单订单标记
+  uint64 disCreatedAt = 6;        //派单时间
+  uint64 spuModelId = 7;          //机型ID
+  uint64 goodsType = 8;           //成新度
+  uint64 brandId = 9;             //品牌ID
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message DwdDistributeValidOrderViewFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;                // pageNo
+  int64 pageSize = 2;              // pageSize
+  repeated string sortField = 3;   // sortField
+  repeated string sortType = 4;    // sortType
+  bool genTotal = 5;               // genTotal
+  uint64 id = 6;                   // ID
+  uint64 orderId = 7;              //订单号
+  uint64 disServerId = 8;          //派发商家ID
+  uint64 noHandledSign = 9;        //未处理标记
+  uint64 distributeOrderSign = 10; //派单订单标记
+  uint64 disCreatedAt = 11;        //派单时间
+  uint64 spuModelId = 12;          //机型ID
+  uint64 goodsType = 13;           //成新度
+  uint64 brandId = 14;             //品牌ID
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message DwdDistributeValidOrderViewList {
+  repeated DwdDistributeValidOrderView dwdDistributeValidOrderView = 1; // dwdDistributeValidOrderViewList
+  int64 totalPage = 2;                                                  //总页数
+  int64 total = 3;                                                      //总数据量
+  int32 perPage = 4;                                                    //当前第几页
+  int32 perSize = 5;                                                    //每页数据量
+  int32 count = 6;                                                      //当前页实际数量
+}
+//--------------------------------定向派单-派单商家--------------------------------
+message DirectedDispatchServer {
+  // Database Tag Begin. DO NOT EDIT !!!
+  uint64 id = 1;                    // id
+  int64 pid = 2;                    // directed_dispatch_server_tag表主键
+  int64 serverId = 3;               //商家ID
+  string serverName = 4;            //商家名称
+  int64 serverLevel = 5;            //商家等级
+  string serverLevelName = 6;       //商家等级名称
+  string sevenTwoDeliveryRate = 7;  //最近7-2天发货率
+  string twoDeliveryRate = 8;       //最近2天发货率
+  string deliveryRate = 9;          //派单总发货率
+  int64 sevenTwoOrderCount = 10;    //最近7-2天订单量
+  int64 createdAt = 11;             //创建时间
+  string threeOneDeliveryRate = 12; //最近3-1天发货率
+  int64 threeOneOrderCount = 13;    //最近3-1天订单量
+  uint64 serverCanDeliveryNum = 14; //可发货订单
+  uint64 serverIsDeliveryNum = 15;  //已发货订单
+  string orderDeliveryRate = 16;    //发货率
+  uint64 pendingOrderNum = 17;      //未响应订单量
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message DirectedDispatchServerFilter {
+  // Database Tag Begin. DO NOT EDIT!!!
+  int64 pageNo = 1;                 // pageNo
+  int64 pageSize = 2;               // pageSize
+  repeated string sortField = 3;    // sortField
+  repeated string sortType = 4;     // sortType
+  bool genTotal = 5;                // genTotal
+  uint64 id = 6;                    // id
+  int64 pid = 7;                    // directed_dispatch_server_tag表主键
+  int64 serverId = 8;               //商家ID
+  string serverName = 9;            //商家名称
+  int64 serverLevel = 10;           //商家等级
+  string serverLevelName = 11;      //商家等级名称
+  string sevenTwoDeliveryRate = 12; //最近7-2天发货率
+  string twoDeliveryRate = 13;      //最近2天发货率
+  string deliveryRate = 14;         //派单总发货率
+  int64 sevenTwoOrderCount = 15;    //最近7-2天订单量
+  int64 createdAt = 16;             //创建时间
+  string threeOneDeliveryRate = 17; //最近3-1天发货率
+  int64 threeOneOrderCount = 18;    //最近3-1天订单量
+  uint64 serverCanDeliveryNum = 19; //可发货订单
+  uint64 serverIsDeliveryNum = 20;  //已发货订单
+  string orderDeliveryRate = 21;    //发货率
+  uint64 pendingOrderNum = 22;      //未响应订单量
+  // Database Tag End. DO NOT EDIT!!!
+
+  // Custom Tag .You Can Edit.
+}
+
+message DirectedDispatchServerList {
+  repeated DirectedDispatchServer directedDispatchServer = 1; // directedDispatchServerList
+  int64 totalPage = 2;                                        //总页数
+  int64 total = 3;                                            //总数据量
+  int32 perPage = 4;                                          //当前第几页
+  int32 perSize = 5;                                          //每页数据量
+  int32 count = 6;                                            //当前页实际数量
+}
+// Message Record End
+
+// ------------------------------------
+// Rpc Func
+// ------------------------------------
+
+service abtestWhiteUser {
+  //-----------------------实验配置白名单表-----------------------
+  rpc QueryAbtestWhiteUserDetail(AbtestWhiteUserFilter) returns (AbtestWhiteUser);
+  rpc QueryAbtestWhiteUserList(AbtestWhiteUserFilter) returns (AbtestWhiteUserList);
+}
+
+service abtestExperimentGroup {
+  //-----------------------实验配置分组表-----------------------
+  rpc QueryAbtestExperimentGroupDetail(AbtestExperimentGroupFilter) returns (AbtestExperimentGroup);
+  rpc QueryAbtestExperimentGroupList(AbtestExperimentGroupFilter) returns (AbtestExperimentGroupList);
+}
+
+service abtestExperiment {
+  //-----------------------实验配置主表-----------------------
+  rpc QueryAbtestExperimentDetail(AbtestExperimentFilter) returns (AbtestExperiment);
+  rpc QueryAbtestExperimentList(AbtestExperimentFilter) returns (AbtestExperimentList);
+}
+
+service globalSecret {
+  //-----------------------globalSecret-----------------------
+  rpc QueryGlobalSecretDetail(GlobalSecretFilter) returns (GlobalSecret);
+  rpc QueryGlobalSecretList(GlobalSecretFilter) returns (GlobalSecretList);
+}
+
+service abtestUserGroup {
+  //-----------------------abtestUserGroup-----------------------
+  rpc QueryAbtestUserGroupDetail(AbtestUserGroupFilter) returns (AbtestUserGroup);
+  rpc QueryAbtestUserGroupList(AbtestUserGroupFilter) returns (AbtestUserGroupList);
+}
+
+service abtestExperimentResult {
+  //-----------------------abtestExperimentResult-----------------------
+  rpc QueryAbtestExperimentResultDetail(AbtestExperimentResultFilter) returns (AbtestExperimentResult);
+  rpc QueryAbtestExperimentResultList(AbtestExperimentResultFilter) returns (AbtestExperimentResultList);
+  rpc QueryAbtestExperimentResultCount(AbtestExperimentResultFilter) returns (AbtestExperimentResultCount);
+  rpc CreateAbtestExperimentResult(AbtestExperimentResultFilter) returns (CreateAbtestExperimentResultResp);
+}
+
+service abtestUserGroupConf {
+  //-----------------------实验用户群配置表-----------------------
+  rpc QueryAbtestUserGroupConfDetail(AbtestUserGroupConfFilter) returns (AbtestUserGroupConf);
+  rpc QueryAbtestUserGroupConfList(AbtestUserGroupConfFilter) returns (AbtestUserGroupConfList);
+}
+
+service tblUserAlipay {
+  //-----------------------COLUMNAR=1 用户关联支付宝表-----------------------
+  rpc QueryTblUserAlipayDetail(TblUserAlipayFilter) returns (TblUserAlipay);
+  rpc QueryTblUserAlipayList(TblUserAlipayFilter) returns (TblUserAlipayList);
+}
+
+service diversionService { rpc Allocate(AllocateRpcReq) returns (AllocateRpcResp); }
+
+service dispatchService {
+  rpc Dispatch(DispatchRpcReq) returns (DispatchRpcResp);
+  // 调试方法
+  rpc Test(DispatchRpcReq) returns (DispatchRpcResp);
+  // 质量比例限制
+  rpc qualityRatioLimit(QualityRatioLimitReq) returns (QualityRatioLimitResp);
+}
+
+service autoDispatchDecisionPath {
+  //-----------------------自动化派单决策路径表-----------------------
+  rpc QueryAutoDispatchDecisionPathDetail(AutoDispatchDecisionPathFilter) returns (AutoDispatchDecisionPath);
+  rpc QueryAutoDispatchDecisionPathList(AutoDispatchDecisionPathFilter) returns (AutoDispatchDecisionPathList);
+}
+
+service commodityActivityOrderSpu {
+  //-----------------------活动订单spu-----------------------
+  rpc CreateCommodityActivityOrderSpu(CommodityActivityOrderSpu) returns (CommodityActivityOrderSpu);
+  rpc UpdateCommodityActivityOrderSpu(CommodityActivityOrderSpu) returns (CommodityActivityOrderSpu);
+  rpc QueryCommodityActivityOrderSpuDetail(CommodityActivityOrderSpuFilter) returns (CommodityActivityOrderSpu);
+  rpc QueryCommodityActivityOrderSpuList(CommodityActivityOrderSpuFilter) returns (CommodityActivityOrderSpuList);
+}
+
+service tblDispatchOrderFactor {
+  //-----------------------派单因子表-----------------------
+  rpc QueryTblDispatchOrderFactorDetail(TblDispatchOrderFactorFilter) returns (TblDispatchOrderFactor);
+  rpc QueryTblDispatchOrderFactorList(TblDispatchOrderFactorFilter) returns (TblDispatchOrderFactorList);
+}
+
+service tblServerDistributeLimitRules {
+  //-----------------------商家派单规则限制表-----------------------
+  rpc CreateTblServerDistributeLimitRules(TblServerDistributeLimitRules) returns (TblServerDistributeLimitRules);
+  rpc UpdateTblServerDistributeLimitRules(TblServerDistributeLimitRules) returns (TblServerDistributeLimitRules);
+  rpc QueryTblServerDistributeLimitRulesDetail(TblServerDistributeLimitRulesFilter) returns (TblServerDistributeLimitRules);
+  rpc QueryTblServerDistributeLimitRulesList(TblServerDistributeLimitRulesFilter) returns (TblServerDistributeLimitRulesList);
+}
+
+service distributeOrderLog {
+  //-----------------------派单记录表-----------------------
+  rpc CreateDistributeOrderLog(DistributeOrderLog) returns (DistributeOrderLog);
+  rpc UpdateDistributeOrderLog(DistributeOrderLog) returns (DistributeOrderLog);
+  rpc QueryDistributeOrderLogDetail(DistributeOrderLogFilter) returns (DistributeOrderLog);
+  rpc QueryDistributeOrderLogList(DistributeOrderLogFilter) returns (DistributeOrderLogList);
+}
+
+service tblDispatchServerFlowPool {
+  //-----------------------派单商家流量池表-----------------------
+  rpc CreateTblDispatchServerFlowPool(TblDispatchServerFlowPool) returns (TblDispatchServerFlowPool);
+  rpc UpdateTblDispatchServerFlowPool(TblDispatchServerFlowPool) returns (TblDispatchServerFlowPool);
+  rpc QueryTblDispatchServerFlowPoolDetail(TblDispatchServerFlowPoolFilter) returns (TblDispatchServerFlowPool);
+  rpc QueryTblDispatchServerFlowPoolList(TblDispatchServerFlowPoolFilter) returns (TblDispatchServerFlowPoolList);
+}
+
+service autoDispatchDecisionPathLink {
+  //-----------------------自动化派单决策路径应用表-----------------------
+  rpc CreateAutoDispatchDecisionPathLink(AutoDispatchDecisionPathLink) returns (AutoDispatchDecisionPathLink);
+  rpc UpdateAutoDispatchDecisionPathLink(AutoDispatchDecisionPathLink) returns (AutoDispatchDecisionPathLink);
+  rpc QueryAutoDispatchDecisionPathLinkDetail(AutoDispatchDecisionPathLinkFilter) returns (AutoDispatchDecisionPathLink);
+  rpc QueryAutoDispatchDecisionPathLinkList(AutoDispatchDecisionPathLinkFilter) returns (AutoDispatchDecisionPathLinkList);
+}
+
+service autoDispatchConfigLogNew {
+  //-----------------------自动派单配置日志表-----------------------
+  rpc CreateAutoDispatchConfigLogNew(AutoDispatchConfigLogNew) returns (AutoDispatchConfigLogNew);
+  rpc UpdateAutoDispatchConfigLogNew(AutoDispatchConfigLogNew) returns (AutoDispatchConfigLogNew);
+  rpc QueryAutoDispatchConfigLogNewDetail(AutoDispatchConfigLogNewFilter) returns (AutoDispatchConfigLogNew);
+  rpc QueryAutoDispatchConfigLogNewList(AutoDispatchConfigLogNewFilter) returns (AutoDispatchConfigLogNewList);
+}
+
+service autoDispatchDecisionRule {
+  //-----------------------自动化派单规则表-----------------------
+  rpc CreateAutoDispatchDecisionRule(AutoDispatchDecisionRule) returns (AutoDispatchDecisionRule);
+  rpc UpdateAutoDispatchDecisionRule(AutoDispatchDecisionRule) returns (AutoDispatchDecisionRule);
+  rpc QueryAutoDispatchDecisionRuleDetail(AutoDispatchDecisionRuleFilter) returns (AutoDispatchDecisionRule);
+  rpc QueryAutoDispatchDecisionRuleList(AutoDispatchDecisionRuleFilter) returns (AutoDispatchDecisionRuleList);
+}
+
+service autoDispatchDecisionPathOrder {
+  //-----------------------自动化派单决策路径订单表-----------------------
+  rpc CreateAutoDispatchDecisionPathOrder(AutoDispatchDecisionPathOrder) returns (AutoDispatchDecisionPathOrder);
+  rpc UpdateAutoDispatchDecisionPathOrder(AutoDispatchDecisionPathOrder) returns (AutoDispatchDecisionPathOrder);
+  rpc QueryAutoDispatchDecisionPathOrderDetail(AutoDispatchDecisionPathOrderFilter) returns (AutoDispatchDecisionPathOrder);
+  rpc QueryAutoDispatchDecisionPathOrderList(AutoDispatchDecisionPathOrderFilter) returns (AutoDispatchDecisionPathOrderList);
+}
+
+service dwdDistributeValidOrderView {
+  //-----------------------dwdDistributeValidOrderView-----------------------
+  rpc QueryDwdDistributeValidOrderViewDetail(DwdDistributeValidOrderViewFilter) returns (DwdDistributeValidOrderView);
+  rpc QueryDwdDistributeValidOrderViewList(DwdDistributeValidOrderViewFilter) returns (DwdDistributeValidOrderViewList);
+  // Service Record End
+}
