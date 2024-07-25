@@ -3,8 +3,8 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"gocli/util/xfile"
-	"gocli/util/xprintf"
+	"github.com/nelsonkti/gocli/util/xfile"
+	"github.com/nelsonkti/gocli/util/xprintf"
 	"os"
 	"strings"
 	"unicode"

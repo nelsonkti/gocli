@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 	"github.com/gobuffalo/packr/v2"
-	"gocli/util/helper"
-	"gocli/util/template"
-	"gocli/util/xfile"
+	"github.com/nelsonkti/gocli/util/helper"
+	"github.com/nelsonkti/gocli/util/template"
+	"github.com/nelsonkti/gocli/util/xfile"
 	"os"
 	"path/filepath"
 	"regexp"

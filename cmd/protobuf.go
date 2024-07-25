@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/nelsonkti/gocli/util/xprintf"
 	"github.com/spf13/cobra"
-	"gocli/util/xprintf"
 	"os"
 	"os/exec"
 	"path/filepath"
