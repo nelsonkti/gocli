@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-const RpcClientIocFile = "internal/container/grpc/grpc.go"
+const rpcClientIocFile = "internal/container/grpc/grpc.go"
 
 // ProtoClientService 定义结构体来存储service信息
 type ProtoClientService struct {
@@ -22,65 +22,68 @@ type ProtoClientService struct {
 	Comment   string
 }
 
-func generateRpcClient(fileP string) error {
+func generateRpcClient(filePath string) error {
 	// 读取文件内容
-	data, err := os.ReadFile(fileP)
+	data, err := os.ReadFile(filePath)
 	if err != nil {
 		fmt.Printf("Error opening file: %v\n", err)
 		return nil
 	}
 
-	protoServices, err := RpcClientDecoder(string(data))
+	protoServices, err := decodeRpcClient(string(data))
 	if err != nil {
 		return fmt.Errorf("protobuf Error decoding")
 	}
-	err = generateClientRpcHandler(fileP, protoServices)
+	err = generateClientRpcHandler(filePath, protoServices)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func generateClientRpcHandler(fileP string, protoService []ProtoClientService) error {
+func generateClientRpcHandler(filePath string, protoService []ProtoClientService) error {
 	if len(protoService) == 0 {
 		return nil
 	}
-	var newProtoService []ProtoClientService
 
+	var validProtoServices []ProtoClientService
 	for _, data := range protoService {
 		if data.Name == "" {
 			continue
 		}
-		newProtoService = append(newProtoService, data)
+		validProtoServices = append(validProtoServices, data)
 	}
 
-	var structInfo protobufStructInfo
-	namespace := filepath.Dir(fileP)
-	structInfo.Namespace = namespace
-	structInfo.Package = filepath.Base(namespace)
-	structInfo.PbPkgName = structInfo.Package
-	structInfo.ModName = xfile.GetModPath(RelativeSymbol)
-	structInfo.StructName = capitalize(filepath.Base(namespace))
-	structInfo.ProtoClientService = newProtoService
+	namespace := filepath.Dir(filePath)
+	structInfo := protobufStructInfo{
+		Namespace:          namespace,
+		Package:            filepath.Base(namespace),
+		PbPkgName:          filepath.Base(namespace),
+		ModName:            xfile.GetModPath(RelativeSymbol),
+		StructName:         capitalize(filepath.Base(namespace)),
+		ProtoClientService: validProtoServices,
+	}
 
-	fileOutputPath := namespace + "/"
+	fileOutputPath := namespace + SlashSymbol
 	newOutPutDir := strings.ReplaceAll(fileOutputPath, "proto", RPCClientOutPutDir)
 
 	xfile.MkdirAll(newOutPutDir)
 
 	box := packr.New(tmplPath, tmplPath)
-	tmpl, _ := box.FindString(rpcClientTemplateFile)
-	outFilePath := newOutPutDir + helper.ToSnakeCase(structInfo.Package) + ".go"
-	err := template.WriteFile(outFilePath, tmpl, structInfo)
+	tmpl, err := box.FindString(rpcClientTemplateFile)
 	if err != nil {
-		return err
+		return fmt.Errorf("error finding template: %w", err)
+	}
+	outFilePath := newOutPutDir + helper.ToSnakeCase(structInfo.Package) + ".go"
+	err = template.WriteFile(outFilePath, tmpl, structInfo)
+	if err != nil {
+		return fmt.Errorf("error writing template file: %w", err)
 	}
 
-	err = GrpcClientIoc(RpcClientIocFile, structInfo.StructName, structInfo.ModName, newOutPutDir)
-	return err
+	return updateGrpcClientIoc(rpcClientIocFile, structInfo.StructName, structInfo.ModName, newOutPutDir)
 }
 
-func RpcClientDecoder(protoContent string) ([]ProtoClientService, error) {
+func decodeRpcClient(protoContent string) ([]ProtoClientService, error) {
 	var services []ProtoClientService
 
 	// 正则表达式来匹配service和rpc方法
@@ -119,8 +122,8 @@ func RpcClientDecoder(protoContent string) ([]ProtoClientService, error) {
 			// 增加服务注释
 			comment := ""
 			commentKey := k - 1
-			if commentKey > 0 && lines[commentKey] != "" && strings.Contains(lines[commentKey], "//") {
-				comment = strings.ReplaceAll(lines[commentKey], "//", "// "+serviceMatches[1]+"Handler")
+			if commentKey > 0 && lines[commentKey] != "" && strings.Contains(lines[commentKey], DoubleSlashSymbol) {
+				comment = strings.ReplaceAll(lines[commentKey], DoubleSlashSymbol, "// "+serviceMatches[1]+"Handler")
 			}
 			currentService = &ProtoClientService{
 				PbPkgName: currentService.PbPkgName, // 保持相同包名
@@ -139,7 +142,7 @@ func RpcClientDecoder(protoContent string) ([]ProtoClientService, error) {
 	return services, nil
 }
 
-func GrpcClientIoc(filePath, clientName, modName, clientPath string) error {
+func updateGrpcClientIoc(filePath, clientName, modName, clientPath string) error {
 	file, err := os.Open(filePath)
 	if err != nil {
 		fmt.Printf("Error opening file: %v\n", err)
@@ -147,36 +150,27 @@ func GrpcClientIoc(filePath, clientName, modName, clientPath string) error {
 	}
 	defer file.Close()
 
-	namespace := modName + "/" + clientPath
-	namespaceLen := len(namespace)
-	if namespaceLen > 0 && namespace[namespaceLen-1:] == SlashSymbol {
-		namespace = namespace[:namespaceLen-1]
-	}
+	namespace := filepath.Join(modName, clientPath)
+	namespace = strings.TrimSuffix(namespace, "/")
 	cPackage := filepath.Base(clientPath)
 	structField := capitalize(clientName)
-	fmt.Println(cPackage, structField, namespace)
 
 	// 新的导入语句和结构体字段
 	newModImport := fmt.Sprintf("\t\"%s\"\n", namespace)
-	newRpcNamespace := "mashang/pkg/grpc"
-	newRpcNamespaceWirte := fmt.Sprintf("\t\"%s\"\n", newRpcNamespace)
+	newRpcNamespace := modName + "/pkg/grpc"
+	newRpcNamespaceWrite := fmt.Sprintf("\t\"%s\"\n", newRpcNamespace)
 
 	originalContainerField := fmt.Sprintf("%s %s.Client", structField, cPackage)
 	containerField := fmt.Sprintf("\t%s %s.Client\n", structField, cPackage)
 
-	originalRegisterField := fmt.Sprintf("%s: %s.New%s(grpc.NewClient(nil, ctx)),", structField, cPackage, structField)
+	originalRegisterField := fmt.Sprintf("%s: %s.New%s(", structField, cPackage, structField)
 	registerField := fmt.Sprintf("\t\t%s: %s.New%s(grpc.NewClient(nil, ctx)),\n", structField, cPackage, structField)
 
 	var updatedContent strings.Builder
 	scanner := bufio.NewScanner(file)
-	importFound := false
-	containerFound := false
-	registerContainerFound := false
 
-	importExists := false
-	importRpcExists := false
-	containerExists := false
-	registerContainerExists := false
+	var importFound, containerFound, registerContainerFound bool
+	var importExists, importRpcExists, containerExists, registerContainerExists bool
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -198,7 +192,7 @@ func GrpcClientIoc(filePath, clientName, modName, clientPath string) error {
 			}
 
 			if !importRpcExists {
-				updatedContent.WriteString(newRpcNamespaceWirte)
+				updatedContent.WriteString(newRpcNamespaceWrite)
 			}
 
 			importFound = false

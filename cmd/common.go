@@ -11,11 +11,14 @@ import (
 )
 
 const (
-	GoFileFormat    = ".go"
-	RelativeSymbol  = "./"
-	UnderlineSymbol = "_"
-	SlashSymbol     = "/"
-	LineBreakSymbol = "\n"
+	GoFileFormat         = ".go"
+	RelativeSymbol       = "./"
+	RelativeDoubleSymbol = "../"
+	UnderlineSymbol      = "_"
+	SlashSymbol          = "/"
+	DoubleSlashSymbol    = "//"
+	NilSymbol            = ""
+	LineBreakSymbol      = "\n"
 )
 
 const (

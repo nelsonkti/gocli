@@ -97,11 +97,9 @@ func generateProtobuf(protoFile string) error {
 	}
 
 	if mode == "server" {
-		generateRpcServer(protoFile)
+		return generateRpcServer(protoFile)
 	} else {
-		generateRpcClient(protoFile)
+		return generateRpcClient(protoFile)
 	}
 
-	fmt.Println(out.String())
-	return nil
 }
