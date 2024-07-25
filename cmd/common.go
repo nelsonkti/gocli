@@ -46,13 +46,14 @@ type serviceStructInfo struct {
 }
 
 type protobufStructInfo struct {
-	ModName       string // mod 名称
-	Namespace     string // 命名空间
-	Package       string // 包名
-	StructName    string // 结构体名称
-	StructComment string // 结构体注释
-	PbPkgName     string // pb 包名
-	ProtoService  ProtoService
+	ModName            string // mod 名称
+	Namespace          string // 命名空间
+	Package            string // 包名
+	StructName         string // 结构体名称
+	StructComment      string // 结构体注释
+	PbPkgName          string // pb 包名
+	ProtoService       ProtoServerService
+	ProtoClientService []ProtoClientService
 }
 
 // checkFileExists 检查文件是否存在

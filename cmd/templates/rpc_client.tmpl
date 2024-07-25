@@ -1,0 +1,22 @@
+package {{.Package}}
+
+import (
+	googleGrpc "google.golang.org/grpc"
+    "{{.ModName}}/{{.Namespace}}"
+)
+
+type Client struct {
+{{range .ProtoClientService}}
+	{{.Name}}        {{$.PbPkgName}}.{{.Name}}Client
+{{- end}}
+}
+
+func NewDiversion(cli *googleGrpc.ClientConn) Client {
+	return Client{
+	{{range .ProtoClientService}}
+		{{.Name}}:        {{$.PbPkgName}}.New{{.Name}}Client(cli),
+	{{- end}}
+	}
+}
+
+

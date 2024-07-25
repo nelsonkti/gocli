@@ -120,6 +120,7 @@ func diRepository(filePath, newService, newServicePath string, structInfo reposi
 	defer file.Close()
 
 	packageName := filepath.Base(newServicePath)
+	namespacePath := strings.ReplaceAll(newServicePath, RelativeSymbol, "")
 	// 新的导入语句和结构体字段
 	newImport := fmt.Sprintf("\t\"%s/%s\"\n", structInfo.ModName, strings.ReplaceAll(newServicePath, RelativeSymbol, ""))
 	newModImport := fmt.Sprintf("\t\"%s/%s\"\n", structInfo.ModName, structInfo.IOCNamespace)
@@ -146,7 +147,7 @@ func diRepository(filePath, newService, newServicePath string, structInfo reposi
 	for scanner.Scan() {
 		line := scanner.Text()
 
-		if strings.Contains(line, newServicePath) {
+		if strings.Contains(line, namespacePath) {
 			importExists = true
 		}
 

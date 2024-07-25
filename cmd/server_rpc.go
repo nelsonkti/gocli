@@ -1,12 +1,19 @@
 package cmd
 
 import (
+	"fmt"
+	"github.com/gobuffalo/packr/v2"
+	"gocli/util/helper"
+	"gocli/util/template"
+	"gocli/util/xfile"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
 
-// ProtoService 定义结构体来存储service信息
-type ProtoService struct {
+// ProtoServerService 定义结构体来存储service信息
+type ProtoServerService struct {
 	PbPkgName string
 	Name      string
 	Comment   string
@@ -20,8 +27,59 @@ type Method struct {
 	Response string
 }
 
-func RpcDecoder(protoContent string) ([]ProtoService, error) {
-	var services []ProtoService
+func generateRpcServer(fileP string) error {
+	// 读取文件内容
+	data, err := os.ReadFile(fileP)
+	if err != nil {
+		fmt.Printf("Error opening file: %v\n", err)
+		return nil
+	}
+
+	protoServices, err := RpcServerDecoder(string(data))
+	if err != nil {
+		return fmt.Errorf("protobuf Error decoding")
+	}
+	for _, protoService := range protoServices {
+		if protoService.Name == "" {
+			continue
+		}
+		err := generateServerRpcHandler(fileP, protoService)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	return nil
+}
+
+func generateServerRpcHandler(fileP string, protoService ProtoServerService) error {
+	var structInfo protobufStructInfo
+	namespace := filepath.Dir(fileP)
+	structInfo.Namespace = namespace
+	structInfo.Package = filepath.Base(namespace)
+	structInfo.PbPkgName = structInfo.Package
+	structInfo.ModName = xfile.GetModPath(RelativeSymbol)
+	structInfo.StructName = protoService.Name
+	structInfo.PbPkgName = protoService.PbPkgName
+	structInfo.ProtoService = protoService
+
+	fileOutputPath := namespace + "/"
+	newOutPutDir := strings.ReplaceAll(fileOutputPath, "proto", RPCOutPutDir)
+
+	xfile.MkdirAll(newOutPutDir)
+
+	box := packr.New(tmplPath, tmplPath)
+	tmpl, _ := box.FindString(rpcTemplateFile)
+	err := template.WriteFile(newOutPutDir+helper.ToSnakeCase(protoService.Name)+".go", tmpl, structInfo)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func RpcServerDecoder(protoContent string) ([]ProtoServerService, error) {
+	var services []ProtoServerService
 
 	// 正则表达式来匹配service和rpc方法
 	packageRegex := regexp.MustCompile(`option\s+go_package\s*=\s*"([^"]*)";`)
@@ -29,7 +87,7 @@ func RpcDecoder(protoContent string) ([]ProtoService, error) {
 	methodRegex := regexp.MustCompile(`rpc\s+(\w+)\s*\(\s*(\w+)\s*\)\s*returns\s*\(\s*(\w+)\s*\)`)
 
 	// 按行分割Proto内容
-	var currentService *ProtoService
+	var currentService *ProtoServerService
 	lines := strings.Split(protoContent, "\n")
 	for k, line := range lines {
 		line = strings.TrimSpace(line)
@@ -43,7 +101,7 @@ func RpcDecoder(protoContent string) ([]ProtoService, error) {
 			pbPkgName := strings.ReplaceAll(packageMatches[1], ".;", "")
 			// 初始化 currentService 并设置包名
 			if currentService == nil {
-				currentService = &ProtoService{PbPkgName: pbPkgName}
+				currentService = &ProtoServerService{PbPkgName: pbPkgName}
 			} else {
 				currentService.PbPkgName = pbPkgName
 			}
@@ -63,9 +121,9 @@ func RpcDecoder(protoContent string) ([]ProtoService, error) {
 			if commentKey > 0 && lines[commentKey] != "" && strings.Contains(lines[commentKey], "//") {
 				comment = strings.ReplaceAll(lines[commentKey], "//", "// "+serviceMatches[1]+"Handler")
 			}
-			currentService = &ProtoService{
+			currentService = &ProtoServerService{
 				PbPkgName: currentService.PbPkgName, // 保持相同包名
-				Name:      serviceMatches[1],
+				Name:      capitalize(serviceMatches[1]),
 				Comment:   comment,
 			}
 			continue
