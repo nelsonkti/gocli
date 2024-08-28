@@ -16,7 +16,10 @@ gocli 脚手架工具
 使用以下命令安装 gocli 工具：
 
 ```sh
-go get -u github.com/nelsonkti/gocli
+go get -u github.com/nelsonkti/gocli@latest
+
+或者
+go install github.com/nelsonkti/gocli@latest
 ```
 
 ### 配置环境变量
@@ -70,6 +73,11 @@ make:rpc -p=./proto/go_service -m=client
 
 // 服务端
 make:rpc -p=./proto/go_service -m=server
+```
+
+查看版本号
+```sh
+gocli version
 ```
 
 ### 环境要求
