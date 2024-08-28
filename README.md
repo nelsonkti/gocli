@@ -62,7 +62,14 @@ gocli make:mrs -d="root:root+@tcp(127.0.0.1:3306)/demo?charset=utf8mb4&parseTime
 使用 `gocli` 创建 RPC：
 
 ```sh
-gocli make:rpc -p=./proto/demo
+// 默认客户端
+make:rpc -p=./proto/go_service 
+
+// 客户端
+make:rpc -p=./proto/go_service -m=client
+
+// 服务端
+make:rpc -p=./proto/go_service -m=server
 ```
 
 ### 环境要求
