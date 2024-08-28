@@ -6,15 +6,15 @@ import (
 )
 
 type Client struct {
-{{range .ProtoClientService}}
-	{{.Name}}        {{$.PbPkgName}}.{{.Name}}Client
+{{- range .ProtoClientService}}
+	{{.Name}} {{$.PbPkgName}}.{{.Name}}Client
 {{- end}}
 }
 
-func NewDiversion(cli *googleGrpc.ClientConn) Client {
+func New{{$.StructName}}(cli *googleGrpc.ClientConn) Client {
 	return Client{
-	{{range .ProtoClientService}}
-		{{.Name}}:        {{$.PbPkgName}}.New{{.Name}}Client(cli),
+	{{- range .ProtoClientService}}
+		{{.Name}}: {{$.PbPkgName}}.New{{.Name}}Client(cli),
 	{{- end}}
 	}
 }

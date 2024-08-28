@@ -10,7 +10,7 @@ import (
 // {{.ModelStructName}}Model {{.TableComment}}
 type {{.ModelStructName}}Model struct {
 	model.DBModel
-    {{range .Fields}}
+    {{- range .Fields}}
     {{if .MultilineComment -}}
 	/*
 {{.ColumnComment}}

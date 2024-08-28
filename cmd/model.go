@@ -11,6 +11,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"
 	"gorm.io/gorm"
+	"strings"
 )
 
 var (
@@ -71,7 +72,7 @@ func createModel() {
 	// 生成实例
 	g := gen.NewGenerator(gen.Config{
 		Mode:              gen.WithDefaultQuery | gen.WithQueryInterface,
-		FieldNullable:     true,
+		FieldNullable:     false,
 		FieldCoverable:    true,
 		FieldSignable:     false,
 		FieldWithIndexTag: false,
@@ -83,11 +84,13 @@ func createModel() {
 
 	// 自定义字段的数据类型
 	dataMap := map[string]func(columnType gorm.ColumnType) (dataType string){
-		"tinyint":   func(columnType gorm.ColumnType) (dataType string) { return "int64" },
-		"smallint":  func(columnType gorm.ColumnType) (dataType string) { return "int64" },
-		"mediumint": func(columnType gorm.ColumnType) (dataType string) { return "int64" },
-		"bigint":    func(columnType gorm.ColumnType) (dataType string) { return "int64" },
+		"tinyint":   func(columnType gorm.ColumnType) (dataType string) { return "uint64" },
+		"smallint":  func(columnType gorm.ColumnType) (dataType string) { return "uint64" },
+		"mediumint": func(columnType gorm.ColumnType) (dataType string) { return "uint64" },
+		"bigint":    func(columnType gorm.ColumnType) (dataType string) { return "uint64" },
 		"int":       func(columnType gorm.ColumnType) (dataType string) { return "uint64" },
+		"varchar":   func(columnType gorm.ColumnType) (dataType string) { return "string" },
+		"decimal":   func(columnType gorm.ColumnType) (dataType string) { return "float64" },
 	}
 	g.WithDataTypeMap(dataMap)
 
@@ -129,6 +132,11 @@ func generateModel(g *gen.Generator, tab, outputPath, newPath string) {
 
 	box := packr.New(tmplPath, tmplPath)
 	tmpl, _ := box.FindString(modelTemplateFile)
+	for i, field := range model.Fields {
+		if strings.Contains(field.Type, "*") {
+			model.Fields[i].Type = strings.Replace(field.Type, "*", "", -1)
+		}
+	}
 	err = template.WriteFile(outputPath, tmpl, model)
 	if err != nil {
 		fmt.Println(xprintf.Red(fmt.Sprintf("生成 %s 失败: %+v", outputPath, err)))
