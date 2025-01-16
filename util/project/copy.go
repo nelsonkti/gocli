@@ -7,12 +7,12 @@ import (
 	"path/filepath"
 )
 
-func kratosHome() string {
+func Home() string {
 	dir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)
 	}
-	home := filepath.Join(dir, ".kratos")
+	home := filepath.Join(dir, ".project")
 	if _, err := os.Stat(home); os.IsNotExist(err) {
 		if err := os.MkdirAll(home, 0o700); err != nil {
 			log.Fatal(err)
@@ -21,8 +21,8 @@ func kratosHome() string {
 	return home
 }
 
-func kratosHomeWithDir(dir string) string {
-	home := filepath.Join(kratosHome(), dir)
+func HomeWithDir(dir string) string {
+	home := filepath.Join(Home(), dir)
 	if _, err := os.Stat(home); os.IsNotExist(err) {
 		if err := os.MkdirAll(home, 0o700); err != nil {
 			log.Fatal(err)

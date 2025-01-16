@@ -17,10 +17,10 @@ func init() {
 	Cmd.AddCommand(newProject)
 
 	newProject.Flags().StringVarP(&path, "path", "p", "", PathTips)
-	newProject.Flags().StringVarP(&branch, "branch", "b", "", "请输入 [分支] 名称")
+	newProject.Flags().StringVarP(&branch, "branch", "b", "master", "请输入 [分支] 名称")
 }
 
-const layout = "https://github.com/nelsonkti/iris-framework.git"
+const layout = "https://github.com/nelsonkti/gin-framework.git"
 
 var newProject = &cobra.Command{
 	Use:   "new",
@@ -39,8 +39,13 @@ var newProject = &cobra.Command{
 		if len(args) > 3 && path == "" {
 			dir = args[1]
 		}
+		if len(args) > 3 && path == "" {
+			dir = args[1]
+		}
+		if path != dir {
+			dir = path
+		}
 		to := filepath.Join(dir, projectName)
-		fmt.Println(to)
 		if _, err := os.Stat(to); !os.IsNotExist(err) {
 			fmt.Printf("🚫 %s already exists\n", projectName)
 			prompt := &survey.Confirm{
@@ -63,8 +68,13 @@ var newProject = &cobra.Command{
 				return
 			}
 		}
-		fmt.Printf("🚀 Creating service %s, layout repo is %s, please wait a moment.\n\n", projectName, layout)
-		project.NewRepo(layout, "master")
+		fmt.Printf("🚀 Creating Project %s, layout repo is %s, please wait a moment.\n\n", projectName, layout)
+		pro := project.NewRepo(layout, branch)
+
+		err := pro.CopyTo(cmd.Context(), to, projectName, []string{})
+		if err != nil {
+			fmt.Println(err)
+		}
 		fmt.Println(args)
 	},
 }

@@ -51,7 +51,7 @@ func repoDir(url string) string {
 func NewRepo(url string, branch string) *Repo {
 	return &Repo{
 		url:    url,
-		home:   kratosHomeWithDir("repo/" + repoDir(url)),
+		home:   HomeWithDir("repo/" + repoDir(url)),
 		branch: branch,
 	}
 }
@@ -72,6 +72,22 @@ func (r *Repo) Path() string {
 
 // Pull 从远程URL获取存储库。
 func (r *Repo) Pull(ctx context.Context) error {
+	// 保存当前工作目录
+	originalDir, err := os.Getwd()
+	if err != nil {
+		return fmt.Errorf("failed to get current directory: %w", err)
+	}
+
+	// 切换到目标目录
+	if err := os.Chdir(r.Path()); err != nil {
+		return fmt.Errorf("failed to switch to repo directory: %w", err)
+	}
+	defer func() {
+		// 恢复到原工作目录
+		if chdirErr := os.Chdir(originalDir); chdirErr != nil {
+			log.Printf("failed to revert to original directory: %v", chdirErr)
+		}
+	}()
 	cmd := exec.CommandContext(ctx, "git", "symbolic-ref", "HEAD")
 	cmd.Dir = r.Path()
 	if _, err := cmd.CombinedOutput(); err != nil {
@@ -87,6 +103,7 @@ func (r *Repo) Pull(ctx context.Context) error {
 // Clone 将存储库克隆到缓存路径。
 func (r *Repo) Clone(ctx context.Context) error {
 	if _, err := os.Stat(r.Path()); !os.IsNotExist(err) {
+		fmt.Println("repo already exists, skipping clone, path:", r.Path())
 		return r.Pull(ctx)
 	}
 	var cmd *exec.Cmd

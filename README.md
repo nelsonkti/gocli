@@ -66,13 +66,29 @@ gocli make:mrs -d="root:root+@tcp(127.0.0.1:3306)/demo?charset=utf8mb4&parseTime
 
 ```sh
 // 默认客户端
-make:rpc -p=./proto/go_service 
+gocli make:rpc -p=./proto/go_service 
 
 // 客户端
-make:rpc -p=./proto/go_service -m=client
+gocli make:rpc -p=./proto/go_service -m=client
 
 // 服务端
-make:rpc -p=./proto/go_service -m=server
+gocli make:rpc -p=./proto/go_service -m=server
+```
+
+#### 初始化项目
+> 默认是当前目录下创建目录`demo`，并且生成项目模板，默认使用master分支，默认的框架代码：https://github.com/nelsonkti/gin-framework.git
+```sh
+// 创建 `demo` 项目
+gocli new demo
+
+// 指定路径
+gocli new test2 -p=/xx/demo
+
+// 指定分支代码
+gocli new test2 -b=develop
+
+// 指定路径并且指定分支代码
+gocli new test2 -p=/xx/demo -b=develop
 ```
 
 查看版本号
